@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html ng-app="exampleApp">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>表单</title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+	<style type="text/css">
+		.bold{font-weight: bold;}
+	</style>
+</head>
+<body ng-controller="defaultCtrl">
+	<h3>Fruit</h3>
+	<div class="panel-body">
+		<button class="btn btn-primary" ng-click="incrementPrices()">Change Prices</button>
+	</div>
+	<div unordered-list="products" list-property=" price | currency" >
+	</div>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/angular.min.js"></script>
+	<script type="text/javascript">
+		var app = angular.module("exampleApp",[]);
+		app.directive("unorderedList",function(){
+			return function(scope,element,attrs){
+				var data = scope[attrs["unorderedList"]];
+				var propertyExpression = attrs["listProperty"];
+				if(angular.isArray(data)){
+					var listElem = angular.element("<ul>").appendTo(element);
+					for(var i= 0; i<data.length; i++){
+						(function(){
+							var itemElement = angular.element("<li>").appendTo(listElem);
+							var index=i;
+							var watcherFn = function(watchScope){
+								return watchScope.$eval(propertyExpression,data[index]);
+							} 
+							scope.$watch(watcherFn,function(newValue,oldValue){
+								itemElement.text(newValue);
+							});
+						}());
+					}
+				}
+			};
+		});
+		app.controller("defaultCtrl",function($scope){
+			$scope.products = [{
+				name:"Apples",category:"Fruit",price:1.20,expiry:10
+			},{
+				name:"Bananas",category:"Fruit",price:2.42,expiry:7
+			},{
+				name:"Pears",category:"Fruit",price:2.02,expiry:6
+			}];
+			$scope.incrementPrices = function(){
+				for(var i=0; i<$scope.products.length; i++){
+					$scope.products[i].price++;
+				}
+			}
+		});
+	</script>
+</body>
+</html>

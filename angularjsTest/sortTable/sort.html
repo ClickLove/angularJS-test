@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+	 <meta charset="utf-8">
+	<title>过滤数据</title>
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" />
+	<style type="text/css">
+		.orderColor{color:#f00;}
+	</style>
+</head>
+<body ng-controller="productCtr">
+	<form role="form">
+	  <div class="form-group">
+	    <input type="text" class="form-control"  id="name" ng-model="search" placeholder="请输入名称">
+	  </div>
+	</form>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>序号</th>
+				<th ng-click="changeOrder('id')" ng-class="{dropup:order===''}" >ID<span class="caret" ng-class="{orderColor:orderType==='id'}"></span></th>
+				<th ng-click="changeOrder('name')" ng-class="{dropup:order===''}" >名称<span class="caret" ng-class="{orderColor:orderType==='name'}"></span></th>
+				<th ng-click="changeOrder('price')" ng-class="{dropup:orderType==='price'}" >价格<span class="caret" ng-class="{orderColor:orderType=='price'}"></span></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="item in pdtData | filter:search | orderBy:order+orderType ">
+				<td ng-bind="$index+1"></td>
+				<td ng-bind="item.id"></td>
+				<td ng-bind="item.name"></td>
+				<td ng-bind="item.price |currency:'(RMB)'"></td>
+			</tr>
+		</tbody>
+	</table>
+	<script type="text/javascript" src="../js//jquery.min.js"></script>
+	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../js/angular.min.js"></script>
+	<script type="text/javascript">
+	var app = angular.module('myApp', []);
+	app.service('productData',function(){
+		return [{
+			id:1001,
+			name:'apple',
+			price:4500,
+		},{
+			id:1002,
+			name:'huawei',
+			price:2500,
+		},{
+			id:1003,
+			name:'vivo',
+			price:2000,
+		},{
+			id:1004,
+			name:'xiaomi',
+			price:3000
+		},{
+			id:1005,
+			name:'oppo',
+			price:2500,
+		}]
+	});
+	app.controller("productCtr",function($scope,productData){
+		$scope.pdtData=productData;
+		$scope.orderType="id";
+		$scope.order="";
+		$scope.changeOrder=function(type){
+			$scope.orderType=type;
+			if($scope.order===""){
+				$scope.order='-';
+			}else{
+				$scope.order='';
+			}
+		}
+	});
+	</script>
+</body>
+</html>

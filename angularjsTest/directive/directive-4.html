@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html ng-app="exampleApp">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>复杂指令</title>
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" />
+</head>
+<body ng-controller="defaultCtrl">
+	<div book-list></div>
+	<script type="text/javascript" src="../js//jquery.min.js"></script>
+	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../js/angular.min.js"></script>
+	<script type="text/javascript">
+       var app=angular.module("exampleApp",[]);
+       app.directive("bookList",function(){
+       		return {
+       			restrict:"ECAM",
+       			controller:function($scope){
+	   				$scope.books=[{
+		       			name:"C++"
+		       		},{
+		       			name:"Java"
+		       		},{
+		       			name:"javascript"
+		       		}];
+		       		this.addbook=function(){
+		       			$scope.$apply(function(){
+		       				$scope.books.push({
+		       						name:"JavaEE"
+		       				});
+		       			});
+		       			
+		       		}
+       			},
+       			scope:true,
+       			controllerAs:"booklistCtr",
+       			template:"<div><ul><li ng-repeat='book in books'>{{book.name}}</li></ul><book-add></book-add></div>",
+       			replace:true,
+       			// link:function(scope,iElement,iAttr,booklistCtr){
+       			// 	iElement.on("click",booklistCtr.addbook);
+       			// }
+       		}
+       }).directive("bookAdd",function(){
+	       	return {
+	       		restrict:"ECAM",
+	       		require:'^bookList',
+	       		template:"<button type='button' class='btn'>添加</button>",
+	       		replace:true,
+	       		link:function(scope,iElement,iAttr,booklistCtr){
+	       			iElement.on("click",booklistCtr.addbook);
+	       		},
+	       	}
+       });
+       app.controller("defaultCtrl",['$scope',function($scope){
+       		
+       }]);
+	</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html ng-app="exampleApp">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>复杂指令</title>
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" />
+</head>
+<body ng-controller="defaultCtrl">
+		<!-- 
+		1.将div转化为DOM 
+		2.默认优先级为0，先定义先使用
+		 -->
+	<div ng-repeat="pdt in products" custom-tags custom-tags2>
+		
+	</div>
+	<script type="text/javascript" src="../js//jquery.min.js"></script>
+	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../js/angular.min.js"></script>
+	<script type="text/javascript">
+        var i=1;
+		var app=angular.module("exampleApp",[]);
+		app.directive("customTags",function(){
+			return {
+				restrict:"ECAM",
+				template:"<div>{{pdt.name}}</div>",
+				replace:true,
+				compile:function(tElement,tAttrs,transclude){
+					// 编译之后，
+					console.log("customTags+compile+编译阶段...");
+					tElement.append(angular.element("<div>{{pdt.category}}{{pdt.count}}</div>"));
+					return {
+						//表示在编译阶段之后，指令链接到下一个子元素之前 运行
+						pre:function preLink(){
+							console.log("customTags+preLink+编译阶段...");
+						},
+						//表示所有指令链接到下一个子元素之后 运行
+						post:function postLink(scope,iElement,iAttrs,icontroller){
+							console.log("customTags+postLink+编译阶段...");
+							iElement.on('click',function(){
+								//console.log(scope.pdt);
+								scope.$apply(function(){
+									scope.pdt.name="customTags";
+									scope.pdt.count=++i;
+								});
+								
+							});
+						}
+					}
+				},
+				// 在compile中执行了return，则不再执行link;
+				// link:function(){
+
+				// }
+			}
+		}).directive("customTags2",function(){
+			return {
+				restrict:"ECAM",
+				replace:true,
+				compile:function(tElement,tAttrs,transclude){
+					// 编译之后，
+					console.log("customTags2+compile+编译阶段...");
+					return {
+						//表示在编译阶段之后，指令链接到下一个子元素之前 运行
+						pre:function preLink(){
+							console.log("customTags2+preLink+编译阶段...");
+						},
+						//表示所有指令链接到下一个子元素之后 运行
+						post:function postLink(){
+							console.log("customTags2+postLink+编译阶段...");
+						}
+					}
+				},
+				// link:function(){
+					
+				// }
+			}
+		});
+		app.controller("defaultCtrl",function($scope){
+			$scope.products = [{
+				name:"Apples",category:"Fruit",price:1.20,expiry:10
+			},{
+				name:"Bananas",category:"phone",price:2.42,expiry:7
+			},{
+				name:"Pears",category:"tv",price:2.02,expiry:6
+			}];
+		});
+	</script>
+</body>
+</html>

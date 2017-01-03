@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html ng-app="exampleApp">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>复杂指令</title>
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" />
+</head>
+<body>
+	<div class="container">
+		<div ng-controller="firstCtr">
+			<kittencup-grop>
+				<kittencup-collapse ng-repeat="collapse in data" heading="{{collapse.title}}">
+					{{collapse.content}}
+				</kittencup-collapse>
+			</kittencup-grop>
+		</div>
+	</div>
+	<script type="text/javascript" src="../js//jquery.min.js"></script>
+	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../js/angular.min.js"></script>
+	<script type="text/javascript">
+      var app=angular.module('exampleApp',[]);
+      app.factory('DATA',function(){
+      	return [{
+      		title:"title1",
+      		content:"nol-content1"
+      	},{
+      		title:"title2",
+      		content:"nol-content2"
+      	},{
+      		title:"title3",
+      		content:"nol-content3"
+      	}];
+      });
+      app.controller('firstCtr',['$scope','DATA',function($scope,DATA){
+      		$scope.data=DATA;
+      }]);
+      app.directive('kittencupGrop',function(){
+      		return {
+      			restrict:"ECAM",
+      			replace:true,
+      			template:"<div class='panel-group' ng-transclued></div>",
+      			transclude:true,
+      		}
+      }).directive('kittencupCollapse',function(){
+      		return {
+      			restrict:'ECAM',
+      			replace:true,
+      			templateUrl:'app/kittencupCollapse.html'
+      		}
+      });
+	</script>
+</body>
+</html>
