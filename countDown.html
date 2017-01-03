@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+		</style>
+	</head>
+	<body>
+		<div id="clockdiv">	
+			Days:<span class="days"></span><br>
+			Hours:<span class="hours"></span><br>
+			Minutes:<span class="minutes"></span><br>
+			Seconds:<span class="seconds"></span>
+		</div>
+		<script type="text/javascript">
+			var deadline = "2016-8-3";//3/8/2016  定义有效的结束日期，日期的格式只要是Javascript Date.parse()方法能够解析的任何一种格式
+			 var schedule = [['Jul 25 2015','Sept 20 2015'],['Sept 21 2015','Jul 20 2016'],['Jul 25 2016','Sept 20 2017'],]
+			window.onload=function(){
+//				initializeClock('clockdiv',deadline);//方法1，在首次显示时钟时有延迟
+				updateClock();
+				var timeinterval  = setInterval(updateClock,1000);//方法2，在首次显示时钟时有无延迟
+			};
+			//计算剩余时间
+			function getTimeRemaining(endtime){
+				var t=Date.parse(endtime)-Date.parse(new Date());
+				var seconds = Math.floor((t/1000)%60);
+				var minutes = Math.floor((t/1000/60)%60);
+				var hours = Math.floor((t/(1000*60*60))%24);
+				var days = Math.floor(t/(1000*60*60*24));
+				return{
+					'total':t,
+					'das':days,
+					'hours':hours,
+					'minutes':minutes,
+					'seconds':seconds
+				};
+			}
+			function initializeClock(id,endtime){
+				var clock = document.getElementById(id);
+				var timeinterval = setInterval(function(){
+					var t = getTimeRemaining(endtime);
+					clock.innerHTML = 'days:' + t.days + '&lt;br&gt;' + 
+									'hours:' + t.hours + '&lt;br&gt;' + 
+									'minutes:' + t.minutes + '&lt;br&gt;' +
+									'seconds:' + t.seconds;
+					if(t.total == 0){
+						clearInterval(timeinterval);
+					}
+				},1000);
+			}
+			function updateClock(){
+				var clock = document.getElementById('clockdiv');
+				var daysSpan = clock.querySelector('.days');
+				var hoursSpan = clock.querySelector('.hours');
+				var minutesSpan = clock.querySelector('.minutes');
+				var secondsSpan = clock.querySelector('.seconds');
+				var t = getTimeRemaining(deadline);
+//				clock.innerHTML = 'days:' + t.days + '&lt;br&gt;' + 
+//								'hours:' + t.hours + '&lt;br&gt;' + 
+//								'minutes:' + t.minutes + '&lt;br&gt;' +
+//								'seconds:' + t.seconds;
+				daysSpan.innerHTML = t.days;
+				hoursSpan.innerHTML = t.hours;
+				minutesSpan.innerHTML = ('0'+ t.minutes).slice(-2);
+//				secondsSpan.innerHTML = t.seconds;
+				secondsSpan.innerHTML = ('0'+ t.seconds).slice(-2);//为秒钟前面加0
+				if(t.total == 0){
+					clearInterval(timeinterval);
+				}					
+			}
+		</script>
+	</body>
+</html>
